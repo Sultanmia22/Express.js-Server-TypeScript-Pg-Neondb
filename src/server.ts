@@ -189,6 +189,49 @@ app.put("/api/v1/users/:id", async (req: Request, res: Response) => {
   }
 });
 
+app.delete("/api/v1/users/:id",  async (req: Request, res: Response) => {
+  try{
+
+    const {id} = req.params
+
+    const result = await pool.query(`
+      DELETE FROM users
+      WHERE id = $1;
+      `,[id])
+
+    // console.log(result)  
+
+    if(result.rowCount === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User Not Found"
+      })
+      return
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User Delete Successfully!"
+    })
+
+  }catch (er) {
+    if (er instanceof Error) {
+      console.log("Error Message:", er);
+      return res.status(500).json({
+        success: false,
+        message: er?.message,
+        error: er,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Enternal Server Error",
+      error: er,
+    });
+  }
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
