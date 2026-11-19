@@ -82,22 +82,20 @@ app.post("/api/v1/users", async (req: Request, res: Response) => {
   }
 });
 
-
 app.get("/api/v1/users", async (req: Request, res: Response) => {
   try {
     const result = await pool.query(`
         SELECT * FROM users
-      `)
+      `);
 
-    console.log("result users data: ", result)
+    console.log("result users data: ", result);
 
     res.status(200).json({
       success: true,
       message: "User Data Retrive Successfully!!",
-      data: result
-    })
-  }
-  catch (er) {
+      data: result,
+    });
+  } catch (er) {
     if (er instanceof Error) {
       return res.status(500).json({
         success: false,
@@ -112,27 +110,28 @@ app.get("/api/v1/users", async (req: Request, res: Response) => {
       error: er,
     });
   }
-})
-
+});
 
 app.get("/api/v1/users/:id", async (req: Request, res: Response) => {
-  try{
-    const {id} = req.params;
+  try {
+    const { id } = req.params;
 
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
         SELECT * FROM users
         WHERE id = $1
-      `, [id])
+      `,
+      [id],
+    );
 
-      console.log("Reuslt : ",result)
+    console.log("Reuslt : ", result);
 
-      res.status(200).json({
-        success: true,
-        message: "Specific User Retrive Successfully!",
-        data: result
-      });
-  }
-  catch(er) {
+    res.status(200).json({
+      success: true,
+      message: "Specific User Retrive Successfully!",
+      data: result,
+    });
+  } catch (er) {
     if (er instanceof Error) {
       return res.status(500).json({
         success: false,
@@ -147,29 +146,48 @@ app.get("/api/v1/users/:id", async (req: Request, res: Response) => {
       error: er,
     });
   }
-})
+});
 
 app.put("/api/v1/users/:id", async (req: Request, res: Response) => {
-  const {name,id,password,age,is_Active} = req.params;
+  try {
+    const { id } = req.params;
+    const { name, password, age, is_Active } = req.body;
 
-  const result = await pool.query(`
+    const result = await pool.query(
+      `
       UPDATE users
       SET
-      name = COALESCE($1, name)
-      password = COALESCE($2, password),
-      age = COALESCE($3, age),
-      is_Active = COALESCE($4, is_Active),
-      WHERE id=$5 RETURNING *
-    `, [name ?? null, password ?? null, age ?? null, is_Active ?? null,id])
+        name = COALESCE($1, name),
+        password = COALESCE($2, password),
+        age = COALESCE($3, age),
+        is_Active = COALESCE($4, is_Active)
+      WHERE id = $5 RETURNING *
+    `,
+      [name, password, age, is_Active, id],
+    );
 
     res.status(200).json({
       success: true,
       message: "User Data Update Successfully!",
       data: result,
     });
+  } catch (er) {
+    if (er instanceof Error) {
+      console.log("Error Message:", er);
+      return res.status(500).json({
+        success: false,
+        message: er?.message,
+        error: er,
+      });
+    }
 
+    return res.status(500).json({
+      success: false,
+      message: "Enternal Server Error",
+      error: er,
+    });
+  }
 });
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
