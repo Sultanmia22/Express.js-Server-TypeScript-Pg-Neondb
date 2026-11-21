@@ -9,7 +9,7 @@ export const initDB = async () => {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users(
-        id SERIAL PRIMARY KEY,
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         name VARCHAR(255),
         email VARCHAR(255) NOT NULL,
         password VARCHAR(255) NOT NULL,
@@ -19,6 +19,22 @@ export const initDB = async () => {
         updated_at TIMESTAMP DEFAULT  NOW()
       )
       `);
+
+    await pool.query(`
+      
+      CREATE TABLE IF NOT EXISTS profile(
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+      bio TEXT,
+      address TEXT,
+      phone VARCHAR(15),
+      gender VARCHAR(15),
+
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+      )
+      
+      `)  
 
     console.log("Database Connected!!");
   } catch (er) {

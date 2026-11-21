@@ -1,0 +1,20 @@
+import { pool } from "../../db";
+import type { ICreateProfile } from "./profie.interface";
+
+const createProfileIntoDB = async (payload: ICreateProfile) => {
+  const { user_id, bio, address, phone, gender } = payload;
+
+  const result = await pool.query(
+    `
+            INSERT INTO profile (user_id, bio, address, phone, gender)
+            VALUES($1, $2, $3, $4, $5)
+            RETURNING *
+        `,
+    [user_id, bio, address, phone, gender],
+  );
+  return result;
+};
+
+export const profileService = {
+  createProfileIntoDB,
+};
