@@ -15,6 +15,14 @@ const createProfileIntoDB = async (payload: ICreateProfile) => {
   return result;
 };
 
+const getProfileDataFromDB = async () => {
+    const result = await pool.query(`
+            SELECT * FROM profile
+        `)
+     return result   
+}
+
 export const profileService = {
   createProfileIntoDB,
+  getProfileDataFromDB
 };
