@@ -25,8 +25,10 @@ const loginUserIntoDB = async (payload: ILoginData) => {
         throw new Error("Invalid Credentials")
     };
 
+    console.log(user)
+
     // step3 : check the user status
-    if (!user.rows[0].is_Active) {
+    if (!user.rows[0].is_active) {
         throw new Error("Access Denied!")
     };
 
@@ -41,7 +43,9 @@ const loginUserIntoDB = async (payload: ILoginData) => {
 
     const accessToken = jwt.sign(jwtPayload, secret,{expiresIn: "1d"})
 
-    return accessToken;
+    delete user.rows[0].password
+
+    return {accessToken,user:user.rows[0]};
 };
 
 export const authService = {

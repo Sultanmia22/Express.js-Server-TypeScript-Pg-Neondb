@@ -5,7 +5,13 @@ const loginUser = async (req: Request, res: Response) => {
     try{
         const result = await authService.loginUserIntoDB(req.body);
 
-        
+        console.log(result)
+
+        res.status(200).json({
+            success: true,
+            message: "Login Successfully!",
+            data: result
+        })
     } catch (er) {
         if (er instanceof Error) {
             console.log("Error Message:", er);
