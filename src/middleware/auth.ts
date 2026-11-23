@@ -30,6 +30,10 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
         })
     };    
 
+    req.user = decode;
+
+    console.log("Request Data", req)
+
     next()
 }
 
