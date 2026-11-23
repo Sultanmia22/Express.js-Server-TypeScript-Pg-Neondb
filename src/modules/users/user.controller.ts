@@ -6,8 +6,6 @@ const createUser = async (req: Request, res: Response) => {
   try {
     const result = await userService.createUserIntoDB(req.body);
 
-    // console.log("Result: ", result);
-
     res.status(201).json({
       success: true,
       message: "User Create Successfully!!",
@@ -33,8 +31,6 @@ const createUser = async (req: Request, res: Response) => {
 const getAllUser = async (req: Request, res: Response) => {
   try {
     const result = await userService.getUserFromDB();
-
-    console.log("result users data: ", result);
 
     res.status(200).json({
       success: true,

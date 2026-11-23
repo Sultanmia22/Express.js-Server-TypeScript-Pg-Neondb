@@ -4,13 +4,14 @@ import { userRoute } from "./modules/users/router";
 import { profileRoute } from "./modules/profile/profile.route";
 import { authRoute } from "./modules/auth/auth.route";
 import fs from "fs"
+import logger from "./middleware/logger";
 
 const app: Application = express();
 
 app.use(express.json())
 app.use(express.text())
 app.use(express.urlencoded())
-
+app.use(logger)
 
 initDB()
 
