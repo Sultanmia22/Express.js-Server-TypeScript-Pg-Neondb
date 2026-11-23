@@ -3,7 +3,8 @@ import jwt, { type JwtPayload } from "jsonwebtoken"
 import config from "../config";
 import { pool } from "../db";
 
-const auth = async (req: Request, res: Response, next: NextFunction) => {
+const auth = () => {
+   return async (req: Request, res: Response, next: NextFunction) => {
 
     const token = req.headers?.authorization
 
@@ -32,9 +33,9 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 
     req.user = decode;
 
-    console.log("Request Data", req)
 
     next()
+}
 }
 
 export default auth
