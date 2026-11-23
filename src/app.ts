@@ -11,17 +11,6 @@ app.use(express.json())
 app.use(express.text())
 app.use(express.urlencoded())
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-
-  const log = `\nMethod: ${req.method} | URL: ${req.url} | Time: ${Date.now()}\n`
-
-  fs.appendFile("logger.txt",log,(er) => {
-    console.log(er)
-  })
-
-  // console.log("Log:",log)
-  next();
-});
 
 initDB()
 
