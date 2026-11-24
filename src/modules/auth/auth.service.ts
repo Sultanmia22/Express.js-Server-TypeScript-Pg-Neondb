@@ -38,6 +38,7 @@ const loginUserIntoDB = async (payload: ILoginData) => {
         id: user.rows[0].id,
         name: user.rows[0].name,
         email: user.rows[0].email,
+        role: user.rows[0].role
     };
 
 
