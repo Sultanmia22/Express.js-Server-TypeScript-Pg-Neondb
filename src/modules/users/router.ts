@@ -10,8 +10,8 @@ const router = Router()
 router.post("/", userController.createUser);
 // get all user
 router.get("/", auth(USER_ROLE.admin, USER_ROLE.agent), userController.getAllUser)
-router.get("/:id",userController.singleUser)
-router.put("/:id",userController.updateUser)
-router.delete("/:id",userController.deleteUser)
+router.get("/:id",auth(USER_ROLE.admin, USER_ROLE.agent, USER_ROLE.user),userController.singleUser)
+router.put("/:id",auth(USER_ROLE.admin, USER_ROLE.user),userController.updateUser)
+router.delete("/:id",auth(USER_ROLE.admin, USER_ROLE.user),userController.deleteUser)
 
 export const userRoute = router

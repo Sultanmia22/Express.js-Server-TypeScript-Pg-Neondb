@@ -30,7 +30,15 @@ const auth = (...roles: Role[]) => {
             success: false,
             message: "User Not Found"
         })
-    };    
+    };   
+    
+    
+    if(!roles.length && !roles.includes(user.rows[0].role)) {
+        res.status(401).json({
+            success: false,
+            message: "Unauthorized Access!!"
+        });
+    };
 
     req.user = decode;
 
