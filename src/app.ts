@@ -6,9 +6,17 @@ import { authRoute } from "./modules/auth/auth.route";
 import fs from "fs"
 import logger from "./middleware/logger";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
+import cors from "cors"
 
 const app: Application = express();
 
+const corsOptions = {
+  origin: 'http://localhost:3000', 
+  methods: ['GET', 'POST'],        
+  credentials: true              
+};
+
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.text())
 app.use(express.urlencoded())
@@ -19,6 +27,7 @@ initDB()
 app.use("/api/v1/users",userRoute)
 app.use("/api/v1/profile",profileRoute)
 app.use("/api/v1/auth",authRoute)
+
 
 app.get("/", (req: Request, res: Response) => {
   res.send("This is Root Route");
