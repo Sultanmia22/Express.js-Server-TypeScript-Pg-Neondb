@@ -5,6 +5,7 @@ import { profileRoute } from "./modules/profile/profile.route";
 import { authRoute } from "./modules/auth/auth.route";
 import fs from "fs"
 import logger from "./middleware/logger";
+import { globalErrorHandler } from "./middleware/globalErrorHandler";
 
 const app: Application = express();
 
@@ -23,6 +24,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("This is Root Route");
 }); 
 
-
+app.use(globalErrorHandler)
 
 export default app
