@@ -3,6 +3,7 @@ import { pool } from "../../db";
 import type { ILoginData } from "./auth.interface";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import config from "../../config";
+import { AppError } from "../../errors/AppError";
 
 const loginUserIntoDB = async (payload: ILoginData) => {
   // step 1: check if user exists in db
@@ -16,19 +17,19 @@ const loginUserIntoDB = async (payload: ILoginData) => {
   );
 
   if (user.rowCount === 0) {
-    throw new Error("Invalid Credentials");
+    throw new AppError("User Not Found!",404)
   }
 
   // step2: checked if password are matched ?
   const matchPassword = await bcrypt.compare(password, user.rows[0].password);
 
   if (!matchPassword) {
-    throw new Error("Invalid Credentials");
+    throw new AppError("Invalid Credentials",401);
   }
 
   // step3 : check the user status
   if (!user.rows[0].is_active) {
-    throw new Error("Access Denied!");
+    throw new AppError("Fobidden",403)
   }
 
   // step4: Generate jwt token
@@ -56,7 +57,7 @@ const loginUserIntoDB = async (payload: ILoginData) => {
 
 const generateAccessToken = async (token: string) => {
   if (!token) {
-    throw new Error("Unauthorized access!");
+    throw new AppError("Unauthorized access!",401)
   }
 
   const decode = jwt.verify(token, config.JWT_REFRESH_SECRET) as JwtPayload;
@@ -70,13 +71,13 @@ const generateAccessToken = async (token: string) => {
   );
 
   if(user.rowCount === 0){
-    throw new Error("User Not Found")
+    throw new AppError("User Not Found!",404)
   }
 
 
   // step3 : check the user status
   if (!user.rows[0].is_active) {
-    throw new Error("Access Denied!");
+    throw new AppError("Fobidden",403)
   }
 
   // step4: Generate jwt token
