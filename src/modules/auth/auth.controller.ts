@@ -14,7 +14,6 @@ const loginUser = async (req: Request, res: Response) => {
             sameSite: "lax", // "none", "strict", "lax"
             path: "/",
             domain: "localhost",
-
         })
 
         res.status(200).json({
@@ -38,8 +37,38 @@ const loginUser = async (req: Request, res: Response) => {
             error: er,
         });
     }
+};
+
+const generateToken = async (req: Request, res: Response) => {
+    try{
+        const result = await authService.generateAccessToken(req.cookies.refreshToken)
+
+
+        res.status(200).json({
+            success: true,
+            message: "access token generated successfully!",
+            data: result
+        })
+    } catch (er) {
+        if (er instanceof Error) {
+            console.log("Error Message:", er);
+            return res.status(500).json({
+                success: false,
+                message: er?.message,
+                error: er,
+            });
+        }
+
+        return res.status(500).json({
+            success: false,
+            message: "Enternal Server Error",
+            error: er,
+        });
+    }
 }
 
+
 export const authController = {
-    loginUser
+    loginUser,
+    generateToken
 }
