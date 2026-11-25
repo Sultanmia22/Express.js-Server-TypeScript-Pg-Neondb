@@ -41,12 +41,15 @@ const loginUserIntoDB = async (payload: ILoginData) => {
         role: user.rows[0].role
     };
 
+    // Access Token 
+    const accessToken = jwt.sign(jwtPayload, config.JWT_ACCESS_SECRET,{expiresIn: "1h"})
 
-    const accessToken = jwt.sign(jwtPayload, config.jwt_secret,{expiresIn: "1d"})
+    // RrfreshToken 
+    const refreshToken = jwt.sign(jwtPayload, config.JWT_REFRESH_SECRET,{expiresIn: "10d"})
 
     delete user.rows[0].password
 
-    return {accessToken,user:user.rows[0]};
+    return {accessToken,refreshToken,user:user.rows[0]};
 };
 
 export const authService = {

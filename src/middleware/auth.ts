@@ -17,7 +17,7 @@ const auth = (...roles: Role[]) => {
       }
 
       // validation token
-      const decode = jwt.verify(token, config.jwt_secret) as JwtPayload;
+      const decode = jwt.verify(token, config.JWT_ACCESS_SECRET) as JwtPayload;
 
       const user = await pool.query(
         `
@@ -34,10 +34,10 @@ const auth = (...roles: Role[]) => {
         });
       }
 
-      if (!roles.length && !roles.includes(user.rows[0].role)) {
-        res.status(401).json({
+      if (roles.length > 0 && !roles.includes(user.rows[0].role as Role)) {
+        return res.status(401).json({
           success: false,
-          message: "Unauthorized Access!!",
+          message: "Unauthorized Access!!"
         });
       }
 
